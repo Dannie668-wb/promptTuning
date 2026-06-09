@@ -1,0 +1,87 @@
+# a2ui 组件目录（自动生成，勿手动编辑）
+# 生成时间: 2026-06-09T16:26:56.220Z
+
+可用组件列表（component 字段必须为以下之一，不得使用其他组件名称）：
+
+说明：[容器] 表示 children 是子组件 id 数组；[绑定] 表示支持 value: {"path":"/..."} 双向绑定
+
+布局类:
+- Page(页面) [容器]: props(layout(scroll|fixed))
+
+表单类:
+- Input(输入框) [绑定]: props(label, placeholder, type(text|number|tel|password|digit), required, disabled, readOnly, clearable, maxLength)  events(onBlur→call:showToast)
+- Select(选择器) [绑定]: props(label, required, disabled)
+- DatePicker(日期选择) [绑定]: props(title, required, disabled)
+- Radio(单选框) [绑定]: props(value, disabled)
+- Checkbox(复选框) [绑定]: props(value, disabled)
+- Switch(开关) [绑定]: props(defaultChecked, disabled, loading, checkedText, uncheckedText)
+- Form(表单) [容器]: props(layout(horizontal|vertical))  events(onFinish→event:submit/navigate|call:showToast)
+- FormItem(表单项) [容器]: props(label, name, required)
+
+展示类:
+- Card(卡片) [容器]: props(title)  events(onClick→event:navigate)
+- List(列表) [容器]: props(header)
+- Cell(单元格): props(title, description, extra)  events(onClick→event:navigate|call:showToast)
+- Tag(标签): props(text, color(default|primary|success|warning|danger), fill(solid|outline), round)
+- Badge(徽标): props(content)
+- Image(图片): props(src, alt, width, height, fit(cover|contain|fill|none))
+- Divider(分割线): props(content)
+
+操作类:
+- Button(按钮): props(text, color(default|primary|success|warning|danger), fill(solid|outline|none), size(mini|small|middle|large), shape(default|rounded|rectangular), block, disabled, loading)  events(onClick→event:submit/navigate/reset/checkIn|call:showToast)
+- ActionSheet(动作面板): props(visible)  events(onClose→event:reset)
+- NavBar(导航栏): props(title, back, backArrow)  events(onBack→event:navigate)
+- TabBar(标签栏): props(activeKey)  events(onChange→event:navigate)
+
+打卡专用:
+- Calendar(日历) [绑定]: props(selectionMode(single|range))
+- CheckInCard(打卡卡片) [绑定]: props(status(已打卡|未打卡), date)  events(onClick→event:checkIn|call:showToast)
+- Progress(进度条) [绑定]: props(percent, text, rounded)
+
+a2ui PageBundle 完整格式（LLM 输出此格式）：
+{
+  "surfaceId": "page-唯一ID",
+  "name": "页面名称",
+  "catalogId": "antd-mobile",
+  "components": [
+    {
+      "id": "root",
+      "component": "Page",
+      "layout": "scroll",
+      "style": {},
+      "children": ["navbar-001", "form-001", "btn-save"]
+    },
+    {
+      "id": "input-name",
+      "component": "Input",
+      "label": "姓名",
+      "placeholder": "请输入姓名",
+      "required": true,
+      "style": {},
+      "value": { "path": "/formData/name" }
+    },
+    {
+      "id": "btn-save",
+      "component": "Button",
+      "text": "保存",
+      "color": "primary",
+      "block": true,
+      "style": {},
+      "onClick": { "action": { "event": { "name": "submit" } } }
+    }
+  ],
+  "initialData": { "formData": { "name": "" } }
+}
+
+Action 格式（event handler 属性值）：
+- Server Event: { "action": { "event": { "name": "submit|navigate|reset|checkIn" } } }
+- 带参数:       { "action": { "event": { "name": "navigate", "context": { "to": "/home" } } } }
+- Local Call:   { "action": { "functionCall": { "call": "showToast", "args": { "message": "提示文字" } } } }
+
+重要约束：
+1. components 中必须包含 id="root" 且 component="Page" 的根组件
+2. 容器组件（Page/Form/Card/List）的 children 是子组件 id 字符串数组（非嵌套对象）
+3. 叶子组件（Button/Tag/NavBar）文本内容用 text/title prop，不用 children
+4. 表单组件用 value: {"path":"/..."} 替代 onChange 事件处理数据绑定
+5. 数据绑定路径必须以 / 开头（JSON Pointer RFC 6901）
+6. props 直接平铺在组件节点上，不用 props:{} 包装层
