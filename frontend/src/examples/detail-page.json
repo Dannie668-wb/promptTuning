@@ -1,0 +1,100 @@
+{
+  "surfaceId": "page-detail-001",
+  "name": "订单详情",
+  "catalogId": "antd-mobile",
+  "components": [
+    {
+      "id": "root",
+      "component": "Page",
+      "layout": "scroll",
+      "style": {},
+      "children": ["navbar-001", "card-status", "card-info", "card-goods", "btn-contact"]
+    },
+    {
+      "id": "navbar-001",
+      "component": "NavBar",
+      "title": "订单详情",
+      "back": "返回",
+      "style": {},
+      "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/orders" } } } }
+    },
+    {
+      "id": "card-status",
+      "component": "Card",
+      "title": "订单状态",
+      "style": { "marginTop": "12px" },
+      "children": ["tag-status"]
+    },
+    {
+      "id": "tag-status",
+      "component": "Tag",
+      "text": "待发货",
+      "color": "warning",
+      "style": {}
+    },
+    {
+      "id": "card-info",
+      "component": "Card",
+      "title": "订单信息",
+      "style": { "marginTop": "8px" },
+      "children": ["cell-order-no", "cell-amount", "cell-time"]
+    },
+    {
+      "id": "cell-order-no",
+      "component": "Cell",
+      "title": "订单编号",
+      "extra": "20240601001",
+      "style": {}
+    },
+    {
+      "id": "cell-amount",
+      "component": "Cell",
+      "title": "订单金额",
+      "extra": "¥299.00",
+      "style": {}
+    },
+    {
+      "id": "cell-time",
+      "component": "Cell",
+      "title": "下单时间",
+      "extra": "2024-06-01 10:30",
+      "style": {}
+    },
+    {
+      "id": "card-goods",
+      "component": "Card",
+      "title": "商品清单",
+      "style": { "marginTop": "8px" },
+      "children": ["cell-goods-1", "divider-001", "cell-goods-2"]
+    },
+    {
+      "id": "cell-goods-1",
+      "component": "Cell",
+      "title": "商品A",
+      "extra": "×1",
+      "style": {}
+    },
+    {
+      "id": "divider-001",
+      "component": "Divider",
+      "style": {}
+    },
+    {
+      "id": "cell-goods-2",
+      "component": "Cell",
+      "title": "商品B",
+      "extra": "×2",
+      "style": {}
+    },
+    {
+      "id": "btn-contact",
+      "component": "Button",
+      "text": "联系客服",
+      "color": "default",
+      "block": true,
+      "style": { "margin": "24px 16px 0" },
+      "onClick": { "action": { "functionCall": { "call": "showToast", "args": { "message": "正在接入客服..." } } } }
+    }
+  ],
+  "initialData": {}
+}

@@ -1,0 +1,68 @@
+{
+  "surfaceId": "page-form-001",
+  "name": "用户信息编辑",
+  "catalogId": "antd-mobile",
+  "components": [
+    {
+      "id": "root",
+      "component": "Page",
+      "layout": "scroll",
+      "style": {},
+      "children": ["navbar-001", "form-001", "btn-save"]
+    },
+    {
+      "id": "navbar-001",
+      "component": "NavBar",
+      "title": "编辑个人信息",
+      "back": "返回",
+      "style": {},
+      "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/profile" } } } }
+    },
+    {
+      "id": "form-001",
+      "component": "Form",
+      "layout": "horizontal",
+      "style": { "marginTop": "12px" },
+      "children": ["input-name", "input-phone", "datepicker-birthday"]
+    },
+    {
+      "id": "input-name",
+      "component": "Input",
+      "label": "姓名",
+      "placeholder": "请输入姓名",
+      "required": true,
+      "style": {},
+      "value": { "path": "/formData/name" }
+    },
+    {
+      "id": "input-phone",
+      "component": "Input",
+      "label": "手机号",
+      "placeholder": "请输入手机号",
+      "required": true,
+      "type": "tel",
+      "style": {},
+      "value": { "path": "/formData/phone" }
+    },
+    {
+      "id": "datepicker-birthday",
+      "component": "DatePicker",
+      "title": "生日",
+      "required": false,
+      "style": {},
+      "value": { "path": "/formData/birthday" }
+    },
+    {
+      "id": "btn-save",
+      "component": "Button",
+      "text": "保存",
+      "color": "primary",
+      "block": true,
+      "style": { "marginTop": "24px", "marginLeft": "16px", "marginRight": "16px" },
+      "onClick": { "action": { "event": { "name": "submit" } } }
+    }
+  ],
+  "initialData": {
+    "formData": { "name": "", "phone": "", "birthday": null }
+  }
+}

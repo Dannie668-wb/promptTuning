@@ -1,0 +1,70 @@
+{
+  "surfaceId": "page-checkin-001",
+  "name": "每日打卡",
+  "catalogId": "antd-mobile",
+  "components": [
+    {
+      "id": "root",
+      "component": "Page",
+      "layout": "scroll",
+      "style": {},
+      "children": ["navbar-001", "checkin-card-001", "progress-001", "card-history", "btn-checkin"]
+    },
+    {
+      "id": "navbar-001",
+      "component": "NavBar",
+      "title": "每日打卡",
+      "back": "返回",
+      "style": {},
+      "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/home" } } } }
+    },
+    {
+      "id": "checkin-card-001",
+      "component": "CheckInCard",
+      "status": "未打卡",
+      "date": "今日",
+      "style": { "margin": "12px 16px 0" }
+    },
+    {
+      "id": "progress-001",
+      "component": "Progress",
+      "percent": 60,
+      "text": true,
+      "style": { "margin": "12px 16px" }
+    },
+    {
+      "id": "card-history",
+      "component": "Card",
+      "title": "历史记录",
+      "style": { "marginTop": "8px" },
+      "children": ["cell-day1", "cell-day2"]
+    },
+    {
+      "id": "cell-day1",
+      "component": "Cell",
+      "title": "2024-05-31",
+      "extra": "已打卡",
+      "style": {}
+    },
+    {
+      "id": "cell-day2",
+      "component": "Cell",
+      "title": "2024-05-30",
+      "extra": "已打卡",
+      "style": {}
+    },
+    {
+      "id": "btn-checkin",
+      "component": "Button",
+      "text": "立即打卡",
+      "color": "primary",
+      "block": true,
+      "size": "large",
+      "style": { "margin": "24px 16px" },
+      "onClick": { "action": { "event": { "name": "checkIn" } } }
+    }
+  ],
+  "initialData": {
+    "checkin": { "status": "未打卡", "monthPercent": 60 }
+  }
+}

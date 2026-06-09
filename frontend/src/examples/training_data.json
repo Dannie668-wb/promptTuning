@@ -1,0 +1,255 @@
+[
+  {
+    "input": "用户信息编辑表单，包含姓名、手机号、生日字段，底部有保存按钮",
+    "output": {
+      "surfaceId": "page-form-001",
+      "name": "用户信息编辑",
+      "catalogId": "antd-mobile",
+      "components": [
+        {
+          "id": "root",
+          "component": "Page",
+          "layout": "scroll",
+          "style": {},
+          "children": ["navbar-001", "form-001", "btn-save"]
+        },
+        {
+          "id": "navbar-001",
+          "component": "NavBar",
+          "title": "编辑个人信息",
+          "back": "返回",
+          "style": {},
+          "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/profile" } } } }
+        },
+        {
+          "id": "form-001",
+          "component": "Form",
+          "layout": "horizontal",
+          "style": { "marginTop": "12px" },
+          "children": ["input-name", "input-phone", "datepicker-birthday"]
+        },
+        {
+          "id": "input-name",
+          "component": "Input",
+          "label": "姓名",
+          "placeholder": "请输入姓名",
+          "required": true,
+          "style": {},
+          "value": { "path": "/formData/name" }
+        },
+        {
+          "id": "input-phone",
+          "component": "Input",
+          "label": "手机号",
+          "placeholder": "请输入手机号",
+          "required": true,
+          "type": "tel",
+          "style": {},
+          "value": { "path": "/formData/phone" }
+        },
+        {
+          "id": "datepicker-birthday",
+          "component": "DatePicker",
+          "title": "生日",
+          "required": false,
+          "style": {},
+          "value": { "path": "/formData/birthday" }
+        },
+        {
+          "id": "btn-save",
+          "component": "Button",
+          "text": "保存",
+          "color": "primary",
+          "block": true,
+          "style": { "marginTop": "24px", "marginLeft": "16px", "marginRight": "16px" },
+          "onClick": { "action": { "event": { "name": "submit" } } }
+        }
+      ],
+      "initialData": {
+        "formData": { "name": "", "phone": "", "birthday": null }
+      }
+    },
+    "source": "seed",
+    "timestamp": "2026-06-10T00:00:00Z"
+  },
+  {
+    "input": "订单详情展示页，显示订单状态标签、订单编号/金额/时间信息、商品清单，底部有联系客服按钮",
+    "output": {
+      "surfaceId": "page-detail-001",
+      "name": "订单详情",
+      "catalogId": "antd-mobile",
+      "components": [
+        {
+          "id": "root",
+          "component": "Page",
+          "layout": "scroll",
+          "style": {},
+          "children": ["navbar-001", "card-status", "card-info", "card-goods", "btn-contact"]
+        },
+        {
+          "id": "navbar-001",
+          "component": "NavBar",
+          "title": "订单详情",
+          "back": "返回",
+          "style": {},
+          "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/orders" } } } }
+        },
+        {
+          "id": "card-status",
+          "component": "Card",
+          "title": "订单状态",
+          "style": { "marginTop": "12px" },
+          "children": ["tag-status"]
+        },
+        {
+          "id": "tag-status",
+          "component": "Tag",
+          "text": "待发货",
+          "color": "warning",
+          "style": {}
+        },
+        {
+          "id": "card-info",
+          "component": "Card",
+          "title": "订单信息",
+          "style": { "marginTop": "8px" },
+          "children": ["cell-order-no", "cell-amount", "cell-time"]
+        },
+        {
+          "id": "cell-order-no",
+          "component": "Cell",
+          "title": "订单编号",
+          "extra": "20240601001",
+          "style": {}
+        },
+        {
+          "id": "cell-amount",
+          "component": "Cell",
+          "title": "订单金额",
+          "extra": "¥299.00",
+          "style": {}
+        },
+        {
+          "id": "cell-time",
+          "component": "Cell",
+          "title": "下单时间",
+          "extra": "2024-06-01 10:30",
+          "style": {}
+        },
+        {
+          "id": "card-goods",
+          "component": "Card",
+          "title": "商品清单",
+          "style": { "marginTop": "8px" },
+          "children": ["cell-goods-1", "divider-001", "cell-goods-2"]
+        },
+        {
+          "id": "cell-goods-1",
+          "component": "Cell",
+          "title": "商品A",
+          "extra": "×1",
+          "style": {}
+        },
+        {
+          "id": "divider-001",
+          "component": "Divider",
+          "style": {}
+        },
+        {
+          "id": "cell-goods-2",
+          "component": "Cell",
+          "title": "商品B",
+          "extra": "×2",
+          "style": {}
+        },
+        {
+          "id": "btn-contact",
+          "component": "Button",
+          "text": "联系客服",
+          "color": "default",
+          "block": true,
+          "style": { "margin": "24px 16px 0" },
+          "onClick": { "action": { "functionCall": { "call": "showToast", "args": { "message": "正在接入客服..." } } } }
+        }
+      ],
+      "initialData": {}
+    },
+    "source": "seed",
+    "timestamp": "2026-06-10T00:00:00Z"
+  },
+  {
+    "input": "每日打卡页面，显示今日打卡状态、本月打卡进度条、历史打卡记录列表，底部有立即打卡按钮",
+    "output": {
+      "surfaceId": "page-checkin-001",
+      "name": "每日打卡",
+      "catalogId": "antd-mobile",
+      "components": [
+        {
+          "id": "root",
+          "component": "Page",
+          "layout": "scroll",
+          "style": {},
+          "children": ["navbar-001", "checkin-card-001", "progress-001", "card-history", "btn-checkin"]
+        },
+        {
+          "id": "navbar-001",
+          "component": "NavBar",
+          "title": "每日打卡",
+          "back": "返回",
+          "style": {},
+          "onBack": { "action": { "event": { "name": "navigate", "context": { "to": "/home" } } } }
+        },
+        {
+          "id": "checkin-card-001",
+          "component": "CheckInCard",
+          "status": "未打卡",
+          "date": "今日",
+          "style": { "margin": "12px 16px 0" }
+        },
+        {
+          "id": "progress-001",
+          "component": "Progress",
+          "percent": 60,
+          "text": true,
+          "style": { "margin": "12px 16px" }
+        },
+        {
+          "id": "card-history",
+          "component": "Card",
+          "title": "历史记录",
+          "style": { "marginTop": "8px" },
+          "children": ["cell-day1", "cell-day2"]
+        },
+        {
+          "id": "cell-day1",
+          "component": "Cell",
+          "title": "2024-05-31",
+          "extra": "已打卡",
+          "style": {}
+        },
+        {
+          "id": "cell-day2",
+          "component": "Cell",
+          "title": "2024-05-30",
+          "extra": "已打卡",
+          "style": {}
+        },
+        {
+          "id": "btn-checkin",
+          "component": "Button",
+          "text": "立即打卡",
+          "color": "primary",
+          "block": true,
+          "size": "large",
+          "style": { "margin": "24px 16px" },
+          "onClick": { "action": { "event": { "name": "checkIn" } } }
+        }
+      ],
+      "initialData": {
+        "checkin": { "status": "未打卡", "monthPercent": 60 }
+      }
+    },
+    "source": "seed",
+    "timestamp": "2026-06-10T00:00:00Z"
+  }
+]
