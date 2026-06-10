@@ -1,89 +1,204 @@
 import { describe, it, expect } from 'vitest'
-import { validatePageSchema, validateSchemaJSON } from './schemaValidator'
+import { validatePageBundle, validatePageBundleJSON } from './schemaValidator'
 
-const TYPES = new Set(['Input', 'Button', 'Form', 'NavBar'])
-
-const validSchema = {
-  id: 'page-001',
+const minimalBundle = {
+  surfaceId: 'page-001',
   name: '测试页',
-  type: 'page' as const,
-  layout: 'scroll' as const,
+  catalogId: 'antd-mobile',
   components: [
-    {
-      id: 'comp-001',
-      type: 'NavBar',
-      props: { title: '测试' },
-      style: {},
-      events: {},
-    },
-    {
-      id: 'comp-002',
-      type: 'Button',
-      props: { text: '提交' },
-      style: {},
-      events: { onClick: { action: 'submit' as const } },
-    },
+    { id: 'root', component: 'Page', layout: 'scroll', style: {}, children: [] as string[] },
   ],
 }
 
-describe('validatePageSchema', () => {
-  it('passes for a valid schema', () => {
-    const result = validatePageSchema(validSchema, TYPES)
+const fullBundle = {
+  surfaceId: 'page-001',
+  name: '测试页',
+  catalogId: 'antd-mobile',
+  components: [
+    { id: 'root', component: 'Page', layout: 'scroll', style: {}, children: ['navbar-001', 'btn-001'] },
+    {
+      id: 'navbar-001',
+      component: 'NavBar',
+      title: '测试',
+      style: {},
+      onBack: { action: { event: { name: 'navigate', context: { to: '/home' } } } },
+    },
+    {
+      id: 'btn-001',
+      component: 'Button',
+      text: '提交',
+      color: 'primary',
+      style: {},
+      onClick: { action: { event: { name: 'submit' } } },
+    },
+  ],
+  initialData: { formData: {} },
+}
+
+describe('validatePageBundle', () => {
+  it('passes for a valid PageBundle', () => {
+    const result = validatePageBundle(fullBundle)
     expect(result.valid).toBe(true)
     expect(result.errors).toHaveLength(0)
   })
 
-  it('fails when type is not "page"', () => {
-    const result = validatePageSchema({ ...validSchema, type: 'form' }, TYPES)
+  it('fails when surfaceId is missing', () => {
+    const { surfaceId: _, ...rest } = fullBundle
+    const result = validatePageBundle(rest)
     expect(result.valid).toBe(false)
-    expect(result.errors).toContain('type: must be "page"')
+    expect(result.errors.some(e => e.includes('surfaceId'))).toBe(true)
   })
 
-  it('fails when components is missing', () => {
-    const { components: _, ...rest } = validSchema
-    const result = validatePageSchema(rest, TYPES)
+  it('fails when components array is missing', () => {
+    const { components: _, ...rest } = fullBundle
+    const result = validatePageBundle(rest)
     expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes('components'))).toBe(true)
   })
 
-  it('fails when component type is not in registry', () => {
-    const schema = {
-      ...validSchema,
-      components: [{ ...validSchema.components[0], type: 'UnknownWidget' }],
-    }
-    const result = validatePageSchema(schema, TYPES)
-    expect(result.valid).toBe(false)
-    expect(result.errors[0]).toMatch(/not a registered component/)
-  })
-
-  it('fails for unknown action type', () => {
-    const schema = {
-      ...validSchema,
+  it('fails when no root component exists', () => {
+    const bundle = {
+      ...minimalBundle,
       components: [
+        { id: 'not-root', component: 'Page', style: {}, children: [] as string[] },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes("id='root'"))).toBe(true)
+  })
+
+  it('fails when root component is not Page', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Form', style: {}, children: [] as string[] },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes("component='Page'"))).toBe(true)
+  })
+
+  it('fails when a component has an unknown type', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['alien-001'] },
+        { id: 'alien-001', component: 'Alien', style: {} },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes("unknown component type 'Alien'"))).toBe(true)
+  })
+
+  it('fails when value binding path does not start with /', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['input-001'] },
+        { id: 'input-001', component: 'Input', style: {}, value: { path: 'formData/name' } },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes('JSON Pointer'))).toBe(true)
+  })
+
+  it('passes for valid value binding path', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['input-001'] },
+        { id: 'input-001', component: 'Input', style: {}, value: { path: '/formData/name' } },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(true)
+  })
+
+  it('fails when event handler has wrong format', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['btn-001'] },
+        { id: 'btn-001', component: 'Button', style: {}, onClick: { action: 'submit' } },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes('onClick'))).toBe(true)
+  })
+
+  it('fails when children reference non-existent component id', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['ghost-id'] },
+      ],
+    }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes('ghost-id'))).toBe(true)
+  })
+
+  it('fails when initialData is not an object', () => {
+    const bundle = { ...minimalBundle, initialData: 'bad' as unknown as Record<string, unknown> }
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some(e => e.includes('initialData'))).toBe(true)
+  })
+
+  it('passes valid server event action', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['btn-001'] },
         {
-          ...validSchema.components[1],
-          events: { onClick: { action: 'flyAway' } },
+          id: 'btn-001',
+          component: 'Button',
+          style: {},
+          onClick: { action: { event: { name: 'navigate', context: { to: '/home' } } } },
         },
       ],
     }
-    const result = validatePageSchema(schema, TYPES)
-    expect(result.valid).toBe(false)
+    const result = validatePageBundle(bundle)
+    expect(result.valid).toBe(true)
   })
 
-  it('skips type check when allowedTypes is empty', () => {
-    const result = validatePageSchema(validSchema, new Set())
+  it('passes valid functionCall action', () => {
+    const bundle = {
+      ...minimalBundle,
+      components: [
+        { id: 'root', component: 'Page', style: {}, children: ['btn-001'] },
+        {
+          id: 'btn-001',
+          component: 'Button',
+          style: {},
+          onClick: { action: { functionCall: { call: 'showToast', args: { message: '成功' } } } },
+        },
+      ],
+    }
+    const result = validatePageBundle(bundle)
     expect(result.valid).toBe(true)
   })
 })
 
-describe('validateSchemaJSON', () => {
-  it('returns invalid for bad JSON', () => {
-    const result = validateSchemaJSON('not json')
+describe('validatePageBundleJSON', () => {
+  it('returns invalid for bad JSON string', () => {
+    const result = validatePageBundleJSON('not json')
     expect(result.valid).toBe(false)
-    expect(result.errors).toContain('invalid JSON')
+    expect(result.errors).toContain('Invalid JSON string')
   })
 
-  it('validates parsed JSON against schema rules', () => {
-    const result = validateSchemaJSON(JSON.stringify(validSchema), TYPES)
+  it('validates parsed JSON against PageBundle rules', () => {
+    const result = validatePageBundleJSON(JSON.stringify(minimalBundle))
+    expect(result.valid).toBe(true)
+  })
+
+  it('validates full bundle as JSON', () => {
+    const result = validatePageBundleJSON(JSON.stringify(fullBundle))
     expect(result.valid).toBe(true)
   })
 })

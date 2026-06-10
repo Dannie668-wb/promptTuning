@@ -22,13 +22,20 @@ function validateAction(value: unknown, path: string): string[] {
     errors.push(`${path}: event handler must be { action: { event | functionCall } }`)
     return errors
   }
-  const { action } = value as A2UIAction
-  if ('event' in action) {
-    if (typeof action.event.name !== 'string') {
+  const action = (value as Record<string, unknown>)['action']
+  if (typeof action !== 'object' || action === null) {
+    errors.push(`${path}.action must be an object with 'event' or 'functionCall'`)
+    return errors
+  }
+  const a = action as Record<string, unknown>
+  if ('event' in a) {
+    const ev = a['event']
+    if (typeof ev !== 'object' || ev === null || typeof (ev as Record<string, unknown>)['name'] !== 'string') {
       errors.push(`${path}.action.event.name must be a string`)
     }
-  } else if ('functionCall' in action) {
-    if (typeof action.functionCall.call !== 'string') {
+  } else if ('functionCall' in a) {
+    const fc = a['functionCall']
+    if (typeof fc !== 'object' || fc === null || typeof (fc as Record<string, unknown>)['call'] !== 'string') {
       errors.push(`${path}.action.functionCall.call must be a string`)
     }
   } else {

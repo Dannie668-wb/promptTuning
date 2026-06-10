@@ -4,6 +4,7 @@ import { REGISTRY, getDefinition, getRegisteredTypes, generateComponentCatalog }
 describe('REGISTRY', () => {
   it('contains all expected component types', () => {
     const expected = [
+      'Page',
       'Input', 'Select', 'DatePicker', 'Radio', 'Checkbox', 'Switch', 'Form', 'FormItem',
       'Card', 'List', 'Cell', 'Tag', 'Badge', 'Image', 'Divider',
       'Button', 'ActionSheet', 'NavBar', 'TabBar',
@@ -18,10 +19,27 @@ describe('REGISTRY', () => {
     for (const [type, def] of Object.entries(REGISTRY)) {
       expect(def.type, `${type}.type`).toBe(type)
       expect(def.component, `${type}.component`).toBeDefined()
-      expect(def.defaultSchema, `${type}.defaultSchema`).toBeDefined()
+      expect(def.defaultNode, `${type}.defaultNode`).toBeDefined()
+      expect(def.defaultNode.component, `${type}.defaultNode.component`).toBe(type)
       expect(Array.isArray(def.propsConfig), `${type}.propsConfig`).toBe(true)
       expect(Array.isArray(def.styleConfig), `${type}.styleConfig`).toBe(true)
       expect(Array.isArray(def.eventsConfig), `${type}.eventsConfig`).toBe(true)
+    }
+  })
+
+  it('container definitions have children array in defaultNode', () => {
+    const containers = Object.values(REGISTRY).filter(d => d.isContainer)
+    for (const def of containers) {
+      expect(Array.isArray(def.defaultNode.children), `${def.type} should have children array`).toBe(true)
+    }
+  })
+
+  it('eventsConfig uses new kind/allowedEvents/allowedCalls format', () => {
+    for (const [type, def] of Object.entries(REGISTRY)) {
+      for (const evt of def.eventsConfig) {
+        expect(evt.kind, `${type}.${evt.key}.kind`).toMatch(/^(event|functionCall)$/)
+        expect('allowedActions' in evt, `${type}.${evt.key} should not have allowedActions`).toBe(false)
+      }
     }
   })
 })
@@ -43,7 +61,8 @@ describe('getRegisteredTypes', () => {
     const types = getRegisteredTypes()
     expect(types.has('Input')).toBe(true)
     expect(types.has('Button')).toBe(true)
-    expect(types.size).toBeGreaterThanOrEqual(22)
+    expect(types.has('Page')).toBe(true)
+    expect(types.size).toBeGreaterThanOrEqual(23)
   })
 })
 
