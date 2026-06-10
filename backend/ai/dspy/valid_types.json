@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-06-09T16:26:56.223Z",
+  "types": [
+    "ActionSheet",
+    "Badge",
+    "Button",
+    "Calendar",
+    "Card",
+    "Cell",
+    "CheckInCard",
+    "Checkbox",
+    "DatePicker",
+    "Divider",
+    "Form",
+    "FormItem",
+    "Image",
+    "Input",
+    "List",
+    "NavBar",
+    "Page",
+    "Progress",
+    "Radio",
+    "Select",
+    "Switch",
+    "TabBar",
+    "Tag"
+  ],
+  "categories": {
+    "layout": [
+      "Page"
+    ],
+    "form": [
+      "Input",
+      "Select",
+      "DatePicker",
+      "Radio",
+      "Checkbox",
+      "Switch",
+      "Form",
+      "FormItem"
+    ],
+    "display": [
+      "Card",
+      "List",
+      "Cell",
+      "Tag",
+      "Badge",
+      "Image",
+      "Divider"
+    ],
+    "action": [
+      "Button",
+      "ActionSheet",
+      "NavBar",
+      "TabBar"
+    ],
+    "checkin": [
+      "Calendar",
+      "CheckInCard",
+      "Progress"
+    ]
+  }
+}

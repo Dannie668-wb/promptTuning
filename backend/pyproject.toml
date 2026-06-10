@@ -1,0 +1,20 @@
+[project]
+name = "a2ui-backend"
+version = "0.1.0"
+description = "a2ui AI Page Generator — FastAPI backend"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "httpx>=0.28.0",
+    "dspy-ai>=2.5.0",
+    "langsmith>=0.2.0",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.10.0",
+]
+
+[dependency-groups]
+dev = []
+
+[tool.uv]
+package = false
